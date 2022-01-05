@@ -61,7 +61,7 @@ jobs:
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ steps.getClusterConfigs.outputs.cluster-id }}
 
       - name: Deploy to DigitalOcean Kubernetes
-        run: kubectl apply -f $GITHUB_WORKSPACE/config/deployments/dev.yml
+        run: kubectl apply -f $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
 
       - name: Verify deployment
         run: kubectl rollout status deployment/github-runner
