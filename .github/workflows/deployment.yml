@@ -39,11 +39,11 @@ jobs:
           path: __infra
           token: ${{ secrets.token }}
 
-      - name: Get cluster id config
-        id: getClusterId
-        uses: mikefarah/yq@master
-        with:
-          cmd: yq eval '.environments.${{ inputs.target }}.cluster-id' $GITHUB_WORKSPACE/__infra/config/cluster.yml
+      # - name: Get cluster id config
+      #   id: getClusterId
+      #   uses: mikefarah/yq@master
+      #   with:
+      #     cmd: yq eval '.environments.${{ inputs.target }}.cluster-id' $GITHUB_WORKSPACE/__infra/config/cluster.yml
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -57,10 +57,11 @@ jobs:
         run: cat $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
 
       - name: Get cluster id
-        run: echo ${{ steps.getClusterId.outputs.result }}
+        id: getClusterId
+        run: echo "::set-output name=cluster-id::`yq e '.environments.${{ inputs.target }}.cluster-id' $GITHUB_WORKSPACE/__infra/config/cluster.yml`"
 
-      # - name: Save DigitalOcean kubeconfig with short-lived credentials
-      #   run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 9f5834dc-6ac8-49a5-9be5-426e24ba7bbe
+      - name: Save DigitalOcean kubeconfig with short-lived credentials
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ steps.getClusterId.outputs.cluster-id }}
 
       # - name: Deploy to DigitalOcean Kubernetes
       #   run: kubectl apply -f $GITHUB_WORKSPACE/config/deployments/dev.yml
