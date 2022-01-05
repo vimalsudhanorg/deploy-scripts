@@ -64,7 +64,7 @@ jobs:
           ./scripts/getconfig.sh
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
-        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ steps.getClusterId.outputs.cluster-id }}
+        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ steps.getClusterConfigs.outputs.cluster-id }}
 
       # - name: Deploy to DigitalOcean Kubernetes
       #   run: kubectl apply -f $GITHUB_WORKSPACE/config/deployments/dev.yml
