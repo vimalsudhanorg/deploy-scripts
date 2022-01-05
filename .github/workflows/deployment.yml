@@ -4,6 +4,9 @@ name: Deployment job
 on:
   workflow_call:
     inputs:
+      service:
+        required: true
+        type: string
       image:
         required: true
         type: string
@@ -11,10 +14,40 @@ on:
         required: false
         default: 'dev-runner'
         type: string
+      cluster:
+        required: false
+        type: string
 
 jobs:
   deploy:
     runs-on: ${{ inputs.runner }}
     steps:
-      - name: Hello
-        run: echo "Hello World"
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: vimalsudhanorg/infra
+          ref: master
+          path: __infra
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} 
+
+      - name: Update deployment file
+        run: sed -i 's|<IMAGE>|'${IMAGE}'|' $GITHUB_WORKSPACE/__infra/$SERVICE/spec.yml
+        env:
+          IMAGE: ${{ inputs.image }}
+          SERVICE: ${{ inputs.service }}
+      
+      - name: Debug deployment file
+        run: cat $GITHUB_WORKSPACE/__infra/$SERVICE/spec.yml
+
+      # - name: Save DigitalOcean kubeconfig with short-lived credentials
+      #   run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 9f5834dc-6ac8-49a5-9be5-426e24ba7bbe
+
+      # - name: Deploy to DigitalOcean Kubernetes
+      #   run: kubectl apply -f $GITHUB_WORKSPACE/config/deployments/dev.yml
+
+      # - name: Verify deployment
+      #   run: kubectl rollout status deployment/github-runner
