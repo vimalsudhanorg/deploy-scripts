@@ -56,9 +56,11 @@ jobs:
       - name: Debug deployment file
         run: cat $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
 
-      - name: Get cluster id
-        id: getClusterId
-        run: echo "::set-output name=cluster-id::`yq e '.environments.${{ inputs.target }}.cluster-id' $GITHUB_WORKSPACE/__infra/config/cluster.yml`"
+      - name: Get cluster Configs
+        id: getClusterConfigs
+        run: |
+          cd $GITHUB_WORKSPACE/__infra
+          ./scripts/getconfig.sh
 
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ steps.getClusterId.outputs.cluster-id }}
