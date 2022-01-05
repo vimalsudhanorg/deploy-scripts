@@ -40,12 +40,6 @@ jobs:
           path: __infra
           token: ${{ secrets.token }}
 
-      # - name: Get cluster id config
-      #   id: getClusterId
-      #   uses: mikefarah/yq@master
-      #   with:
-      #     cmd: yq eval '.environments.${{ inputs.target }}.cluster-id' $GITHUB_WORKSPACE/__infra/config/cluster.yml
-
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
@@ -66,8 +60,8 @@ jobs:
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ steps.getClusterConfigs.outputs.cluster-id }}
 
-      # - name: Deploy to DigitalOcean Kubernetes
-      #   run: kubectl apply -f $GITHUB_WORKSPACE/config/deployments/dev.yml
+      - name: Deploy to DigitalOcean Kubernetes
+        run: kubectl apply -f $GITHUB_WORKSPACE/config/deployments/dev.yml
 
-      # - name: Verify deployment
-      #   run: kubectl rollout status deployment/github-runner
+      - name: Verify deployment
+        run: kubectl rollout status deployment/github-runner
