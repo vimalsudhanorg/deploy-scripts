@@ -23,6 +23,10 @@ on:
       dotoken:
         required: true
 
+env:
+  IMAGE: ${{ inputs.image }}
+  SERVICE: ${{ inputs.service }}
+
 jobs:
   deploy:
     runs-on: ${{ inputs.runner }}
@@ -42,9 +46,6 @@ jobs:
 
       - name: Update deployment file
         run: sed -i 's|<IMAGE>|'${IMAGE}'|' $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
-        env:
-          IMAGE: ${{ inputs.image }}
-          SERVICE: ${{ inputs.service }}
       
       - name: Debug deployment file
         run: cat $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
