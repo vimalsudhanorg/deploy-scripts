@@ -20,6 +20,9 @@ on:
 
 jobs:
   deploy:
+    permissions:
+      contents: read
+      packages: read
     runs-on: ${{ inputs.runner }}
     steps:
       - name: Checkout repository
