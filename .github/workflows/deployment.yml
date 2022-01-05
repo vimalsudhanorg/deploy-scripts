@@ -26,6 +26,7 @@ on:
 env:
   IMAGE: ${{ inputs.image }}
   SERVICE: ${{ inputs.service }}
+  TARGET: ${{ inputs.target }}
 
 jobs:
   deploy:
