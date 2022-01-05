@@ -28,6 +28,7 @@ jobs:
           repository: vimalsudhanorg/infra
           ref: master
           path: __infra
+          token: ${{ secrets.PAT }}
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
