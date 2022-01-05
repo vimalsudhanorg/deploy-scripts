@@ -10,12 +10,12 @@ on:
       image:
         required: true
         type: string
+      target:
+        required: true
+        type: string
       runner:
         required: false
         default: 'dev-runner'
-        type: string
-      cluster:
-        required: false
         type: string
     secrets:
       token:
@@ -47,7 +47,10 @@ jobs:
           SERVICE: ${{ inputs.service }}
       
       - name: Debug deployment file
-        run: cat $GITHUB_WORKSPACE/__infra/$SERVICE/spec.yml
+        run: cat $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
+
+      - name: Get cluster id
+        run: yq e '.environments.${{ inputs.target }}.cluster-id' $GITHUB_WORKSPACE/__infra/config/cluster.yml
 
       # - name: Save DigitalOcean kubeconfig with short-lived credentials
       #   run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 9f5834dc-6ac8-49a5-9be5-426e24ba7bbe
