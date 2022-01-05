@@ -41,7 +41,7 @@ jobs:
           token: ${{ secrets.dotoken }} 
 
       - name: Update deployment file
-        run: sed -i 's|<IMAGE>|'${IMAGE}'|' $GITHUB_WORKSPACE/__infra/$SERVICE/spec.yml
+        run: sed -i 's|<IMAGE>|'${IMAGE}'|' $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
         env:
           IMAGE: ${{ inputs.image }}
           SERVICE: ${{ inputs.service }}
