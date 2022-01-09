@@ -31,6 +31,8 @@ env:
 jobs:
   deploy:
     runs-on: ${{ inputs.runner }}
+    outputs:
+      image: ${{ inputs.image }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -49,29 +51,4 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/__infra
           ./scripts/deploy.sh
-
-      # - name: Generate specs
-      #   run: |
-      #     cd $GITHUB_WORKSPACE/__infra
-      #     ./scripts/generate_spec.sh
-
-      # - name: Update deployment file
-      #   run: sed -i 's|<IMAGE>|'${IMAGE}'|' $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
-      
-      # - name: Debug deployment file
-      #   run: cat $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
-
-      # - name: Get cluster Configs
-      #   id: getClusterConfigs
-      #   run: |
-      #     cd $GITHUB_WORKSPACE/__infra
-      #     ./scripts/getconfig.sh
-
-      # - name: Save DigitalOcean kubeconfig with short-lived credentials
-      #   run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ steps.getClusterConfigs.outputs.cluster-id }}
-
-      # - name: Deploy to DigitalOcean Kubernetes
-      #   run: kubectl apply -f $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
-
-      # - name: Verify deployment
-      #   run: kubectl rollout status deployment/github-runner
+          
