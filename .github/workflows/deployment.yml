@@ -45,15 +45,15 @@ jobs:
         with:
           token: ${{ secrets.dotoken }} 
 
-      - name: Save DigitalOcean kubeconfig with short-lived credentials
+      - name: Do Deployment
         run: |
           cd $GITHUB_WORKSPACE/__infra
-          ./scripts/cluster_login.sh
+          ./scripts/deploy.sh
 
-      - name: Generate specs
-        run: |
-          cd $GITHUB_WORKSPACE/__infra
-          ./scripts/generate_spec.sh
+      # - name: Generate specs
+      #   run: |
+      #     cd $GITHUB_WORKSPACE/__infra
+      #     ./scripts/generate_spec.sh
 
       # - name: Update deployment file
       #   run: sed -i 's|<IMAGE>|'${IMAGE}'|' $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
