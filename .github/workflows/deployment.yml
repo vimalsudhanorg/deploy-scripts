@@ -15,13 +15,13 @@ on:
         type: string
       runner:
         required: false
-        default: 'dev-runner'
+        default: 'undefined'
         type: string
     secrets:
       token:
         required: true
       dotoken:
-        required: true
+        required: false
 
 env:
   IMAGE: ${{ inputs.image }}
@@ -30,7 +30,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: ${{ inputs.runner }}
+    runs-on: ${{ inputs.runner != "undefined" && inputs.runner || format('{0}-runner', inputs.target) }}
     outputs:
       image: ${{ inputs.image }}
     steps:
@@ -43,6 +43,7 @@ jobs:
           token: ${{ secrets.token }}
 
       - name: Install doctl
+        if: ${{ inputs.runner == 'ubuntu:latest' }}
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.dotoken }} 
@@ -51,4 +52,3 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/__infra
           ./scripts/deploy.sh
-          
