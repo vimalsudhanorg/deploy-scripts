@@ -43,6 +43,7 @@ jobs:
           token: ${{ secrets.token }}
 
       - name: Install doctl
+        if: ${{ inputs.runner == 'ubuntu:latest' }}
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.dotoken }} 
