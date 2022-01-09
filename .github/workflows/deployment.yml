@@ -30,7 +30,7 @@ env:
 
 jobs:
   deploy:
-    runs-on: ${{ inputs.runner != "undefined" && inputs.runner || format('{0}-runner', inputs.target) }}
+    runs-on: ${{ inputs.runner != 'undefined' && inputs.runner || format('{0}-runner', inputs.target) }}
     outputs:
       image: ${{ inputs.image }}
     steps:
