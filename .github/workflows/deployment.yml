@@ -45,23 +45,33 @@ jobs:
         with:
           token: ${{ secrets.dotoken }} 
 
-      - name: Update deployment file
-        run: sed -i 's|<IMAGE>|'${IMAGE}'|' $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
-      
-      - name: Debug deployment file
-        run: cat $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
-
-      - name: Get cluster Configs
-        id: getClusterConfigs
+      - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: |
           cd $GITHUB_WORKSPACE/__infra
-          ./scripts/getconfig.sh
+          ./scripts/cluster_login.sh
 
-      - name: Save DigitalOcean kubeconfig with short-lived credentials
-        run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ steps.getClusterConfigs.outputs.cluster-id }}
+      - name: Generate specs
+        run: |
+          cd $GITHUB_WORKSPACE
+          ./scripts/generate_spec.sh
 
-      - name: Deploy to DigitalOcean Kubernetes
-        run: kubectl apply -f $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
+      # - name: Update deployment file
+      #   run: sed -i 's|<IMAGE>|'${IMAGE}'|' $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
+      
+      # - name: Debug deployment file
+      #   run: cat $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
 
-      - name: Verify deployment
-        run: kubectl rollout status deployment/github-runner
+      # - name: Get cluster Configs
+      #   id: getClusterConfigs
+      #   run: |
+      #     cd $GITHUB_WORKSPACE/__infra
+      #     ./scripts/getconfig.sh
+
+      # - name: Save DigitalOcean kubeconfig with short-lived credentials
+      #   run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ steps.getClusterConfigs.outputs.cluster-id }}
+
+      # - name: Deploy to DigitalOcean Kubernetes
+      #   run: kubectl apply -f $GITHUB_WORKSPACE/__infra/services/$SERVICE/spec.yml
+
+      # - name: Verify deployment
+      #   run: kubectl rollout status deployment/github-runner
